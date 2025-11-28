@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Caverna Concursos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- Variáveis e Reset (Mantidos) --- */
+        :root {
+            --bg-dark: #0a0928;
+            --bg-card: #131a22;
+            --primary-gold: #5b59e7;
+            --secondary-gray: #374151;
+            --text-light: #f3f4f6;
+            --text-dim: #9ca3af;
+            --accent-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Centralizar tudo verticalmente na tela */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+        /* --- Tipografia Especial --- */
+        .military-font {
+            font-family: 'Black Ops One', cursive;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- Header Simplificado --- */
+        header {
+            padding: 30px 0;
+            /* Removido fixed position para ficar no fluxo normal */
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+        }
+
+        .logo img {
+            height: 50px; /* Aumentei um pouco a logo */
+            border-radius: 5px;
+        }
+
+        /* --- Container de Login (Adaptado do modal original) --- */
+        .main-login-container {
+            flex: 1; /* Ocupa o espaço restante para centralizar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .login-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--secondary-gray);
+            border-top: 4px solid var(--primary-gold);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            /* Sombra ligeiramente ajustada para página estática */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-gold);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .input-group input {
+            width: 100%;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--secondary-gray);
+            padding: 12px 12px 12px 45px;
+            color: var(--text-light);
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.1);
+        }
+
+        .cta-main {
+            background-color: var(--primary-gold);
+            color: var(--bg-dark);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 5px;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .cta-main:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 193, 7, 0.5);
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .login-footer a:hover {
+            color: var(--primary-gold);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo military-font">
+            <img src="{{ url_for('static', filename='image_793e69.png') }}" alt="Vilar Tecnologia">
+        </div>
+    </header>
+
+    <main class="main-login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h2 class="military-font"><i class="fa-solid fa-id-card"></i> Identificação</h2>
+                <p style="font-size: 0.9rem; color: #9ca3af;">Acesso restrito a matriculados.</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="text" id="email_cpf" placeholder="E-mail ou CPF" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="senha" placeholder="Senha de Acesso" required>
+                </div>
+                <button type="submit" class="cta-main">ACESSAR BASE</button>
+            </form>
+            
+            <div class="login-footer">
+                <a href="#">Esqueceu a senha?</a>
+                <a href="/register_page" style="font-weight: 600;">Criar Conta</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- SCRIPT DE LOGIN SIMPLIFICADO ---
+        // (Removemos as funções de abrir/fechar modal pois não são mais necessárias)
+
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const emailValue = document.getElementById('email_cpf').value.trim();
+            const senhaValue = document.getElementById('senha').value.trim();
+
+            if (!emailValue || !senhaValue) {
+                alert("Preencha todos os campos.");
+                return;
+            }
+
+            const dadosLogin = {
+                email: emailValue,
+                senha: senhaValue
+            };
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadosLogin)
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.status === "sucesso") {
+                    // Redireciona para o dashboard
+                    window.location.href = '/dashboard';
+                } else {
+                    alert("Erro: " + resultado.mensagem);
+                }
+
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert("Erro ao tentar conectar com o servidor. Tente novamente.");
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro | Acesso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #090918;
+            --bg-card: #131a22;
+            --primary-color: #5b59e7;
+            --secondary-gray: #374151;
+            --text-light: #f3f4f6;
+            --text-dim: #9ca3af;
+            --accent-red: #ef4444;
+            --success-color: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+        .military-font {
+            font-family: 'Black Ops One', cursive;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        header {
+            padding: 20px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo img { height: 50px; border-radius: 5px; }
+
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .card-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--secondary-gray);
+            border-top: 4px solid var(--primary-color);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+        }
+
+        .card-header { text-align: center; margin-bottom: 30px; }
+        .card-header h2 { color: var(--primary-color); font-size: 1.8rem; margin-bottom: 10px; }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group i {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            color: var(--text-dim); transition: 0.3s;
+        }
+        .input-group input {
+            width: 100%; background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--secondary-gray);
+            padding: 14px 14px 14px 45px; color: var(--text-light);
+            border-radius: 5px; outline: none; transition: 0.3s; font-size: 1rem;
+        }
+        .input-group input:focus { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(91, 89, 231, 0.3); }
+        .input-group input:focus + i { color: var(--primary-color); }
+        
+        .input-error {
+            border-color: var(--accent-red) !important;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
+        }
+
+        .error-message {
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .cta-main {
+            background-color: var(--primary-color); color: var(--text-light);
+            padding: 15px; font-size: 1.1rem; font-weight: 800; border-radius: 5px;
+            display: inline-block; border: none; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(91, 89, 231, 0.4); width: 100%;
+            transition: all 0.3s ease; font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        .cta-main:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 25px rgba(91, 89, 231, 0.6); 
+            filter: brightness(1.1);
+        }
+
+        .cta-main:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-footer {
+            margin-top: 25px; text-align: center; font-size: 0.9rem;
+            color: var(--text-dim); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;
+        }
+        .card-footer a:hover { color: var(--primary-color); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo military-font">
+             <a href="/">
+                <img src="{{ url_for('static', filename='image_793e69.png') }}" alt="Logo">
+            </a>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="card-box">
+            <div class="card-header">
+                <h2 class="military-font"><i class="fa-solid fa-user-plus"></i>Cadastro Novo Usuário</h2>
+                <p style="color: var(--text-dim);">Preencha seus dados para cadastrar</p>
+            </div>
+            
+            <form id="registerForm">
+                <div class="input-group">
+                    <input type="text" id="reg_nome" placeholder="Nome Completo" required maxlength="255">
+                    <i class="fa-solid fa-user"></i>
+                    <div class="error-message" id="nomeError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="reg_cpf" placeholder="CPF (apenas números)" required maxlength="14">
+                    <i class="fa-solid fa-id-card"></i>
+                    <div class="error-message" id="cpfError"></div>
+                </div>
+
+                <div class="input-group">
+                    <input type="date" id="reg_data_nascimento" placeholder="Data de Nascimento" required>
+                    <i class="fa-solid fa-calendar"></i>
+                    <div class="error-message" id="dataNascimentoError"></div>
+                </div>
+                 
+                <div class="input-group">
+                    <input type="text" id="reg_matricula" placeholder="Matrícula" required maxlength="50">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <div class="error-message" id="matriculaError"></div>
+                </div>
+                 
+                <div class="input-group">
+                    <input type="email" id="reg_email" placeholder="E-mail válido" required maxlength="255">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" id="reg_senha" placeholder="Crie uma Senha" required minlength="6" maxlength="255">
+                    <i class="fa-solid fa-lock"></i>
+                    <div class="error-message" id="senhaError"></div>
+                </div>
+                
+                <div class="success-message" id="successMessage"></div>
+                
+                <button type="submit" class="cta-main" id="submitBtn">CONFIRMAR E SALVAR</button>
+            </form>
+            
+            <div class="card-footer">
+                <p>Já possui cadastro? <a href="/login_page" style="font-weight: 600;">Acesse sua base (Login)</a></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+
+        // Formatação do CPF
+        document.getElementById('reg_cpf').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+
+        // Configurar data máxima (hoje) para data de nascimento
+        const dataNascimentoInput = document.getElementById('reg_data_nascimento');
+        const hoje = new Date().toISOString().split('T')[0];
+        dataNascimentoInput.max = hoje;
+
+        // Validação em tempo real
+        function validateField(field, errorElement, validationFn) {
+            const value = field.value.trim();
+            const error = validationFn(value);
+            
+            if (error) {
+                field.classList.add('input-error');
+                errorElement.textContent = error;
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                field.classList.remove('input-error');
+                errorElement.style.display = 'none';
+                return true;
+            }
+        }
+
+        // Funções de validação
+        function validateNome(nome) {
+            if (nome.length < 2) return 'Nome deve ter pelo menos 2 caracteres';
+            if (nome.length > 255) return 'Nome muito longo';
+            return '';
+        }
+
+        function validateCPF(cpf) {
+            const cleanCPF = cpf.replace(/\D/g, '');
+            if (cleanCPF.length !== 11) return 'CPF deve ter 11 dígitos';
+            return '';
+        }
+
+        function validateDataNascimento(data) {
+            if (!data) return 'Data de nascimento é obrigatória';
+            
+            const dataNasc = new Date(data);
+            const hoje = new Date();
+            const idade = hoje.getFullYear() - dataNasc.getFullYear();
+            
+            if (idade < 16) return 'Você deve ter pelo menos 16 anos';
+            if (idade > 100) return 'Data de nascimento inválida';
+            return '';
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) return 'E-mail inválido';
+            return '';
+        }
+
+        function validateSenha(senha) {
+            if (senha.length < 6) return 'Senha deve ter pelo menos 6 caracteres';
+            return '';
+        }
+
+        // Event listeners para validação em tempo real
+        document.getElementById('reg_nome').addEventListener('blur', function() {
+            validateField(this, document.getElementById('nomeError'), validateNome);
+        });
+
+        document.getElementById('reg_cpf').addEventListener('blur', function() {
+            validateField(this, document.getElementById('cpfError'), validateCPF);
+        });
+
+        document.getElementById('reg_data_nascimento').addEventListener('blur', function() {
+            validateField(this, document.getElementById('dataNascimentoError'), validateDataNascimento);
+        });
+
+        document.getElementById('reg_email').addEventListener('blur', function() {
+            validateField(this, document.getElementById('emailError'), validateEmail);
+        });
+
+        document.getElementById('reg_senha').addEventListener('blur', function() {
+            validateField(this, document.getElementById('senhaError'), validateSenha);
+        });
+
+        registerForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // Coletar dados
+            const nomeValue = document.getElementById('reg_nome').value.trim();
+            const cpfValue = document.getElementById('reg_cpf').value.trim();
+            const dataNascimentoValue = document.getElementById('reg_data_nascimento').value;
+            const matriculaValue = document.getElementById('reg_matricula').value.trim();
+            const emailValue = document.getElementById('reg_email').value.trim();
+            const senhaValue = document.getElementById('reg_senha').value.trim();
+
+            // Validar todos os campos
+            const isNomeValid = validateField(document.getElementById('reg_nome'), document.getElementById('nomeError'), validateNome);
+            const isCpfValid = validateField(document.getElementById('reg_cpf'), document.getElementById('cpfError'), validateCPF);
+            const isDataNascimentoValid = validateField(document.getElementById('reg_data_nascimento'), document.getElementById('dataNascimentoError'), validateDataNascimento);
+            const isEmailValid = validateField(document.getElementById('reg_email'), document.getElementById('emailError'), validateEmail);
+            const isSenhaValid = validateField(document.getElementById('reg_senha'), document.getElementById('senhaError'), validateSenha);
+
+            if (!isNomeValid || !isCpfValid || !isDataNascimentoValid || !isEmailValid || !isSenhaValid) {
+                alert("Por favor, corrija os erros destacados em vermelho.");
+                return;
+            }
+
+            if (!nomeValue || !cpfValue || !dataNascimentoValue || !matriculaValue || !emailValue || !senhaValue) {
+                alert("Por favor, preencha todos os campos.");
+                return;
+            }
+
+            // Feedback visual de carregamento
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PROCESSANDO...';
+            submitBtn.disabled = true;
+
+            const dadosCadastro = {
+                nome_completo: nomeValue,
+                cpf: cpfValue.replace(/\D/g, ''), // Remove formatação do CPF
+                data_nascimento: dataNascimentoValue,
+                matricula: matriculaValue,
+                email: emailValue,
+                senha: senhaValue
+            };
+
+            try {
+                console.log('Enviando dados:', dadosCadastro);
+                
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosCadastro)
+                });
+
+                const resultado = await response.json();
+                console.log('Resposta do servidor:', resultado);
+
+                if (resultado.status === "sucesso") {
+                    alert("Cadastro realizado com sucesso! Você será redirecionado para o login.");
+                    window.location.href = '/login_page';
+                } else {
+                    alert("Erro no cadastro: " + resultado.mensagem);
+                }
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alert("Erro de conexão com o servidor. Verifique o console para mais detalhes.");
+            } finally {
+                // Restaura o botão
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>

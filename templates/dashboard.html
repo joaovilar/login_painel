@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- Reset e Variáveis CSS --- */
+        :root {
+            --primary-color: #4f46e5; /* Índigo */
+            --secondary-color: #64748b; /* Cinza azulado */
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        /* --- Estrutura do Layout --- */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-welcome {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+        }
+
+        /* --- Seção de Filtros --- */
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background-color: var(--bg-white);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .filter-group select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-light);
+            font-family: inherit;
+            min-width: 150px;
+        }
+
+        /* --- Grid do Dashboard --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* --- Cards (Contêineres dos Gráficos) --- */
+        .card {
+            background-color: var(--bg-white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        /* Definindo tamanhos dos cards no grid */
+        .col-span-12 { grid-column: span 12; }
+        .col-span-8 { grid-column: span 8; }
+        .col-span-4 { grid-column: span 4; }
+        .col-span-3 { grid-column: span 3; }
+
+        /* Estilo para KPIs (Indicadores Chave) */
+        .kpi-card {
+            text-align: center;
+        }
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        .kpi-label {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        /* Altura fixa para os contêineres de gráfico para garantir responsividade */
+        .chart-container {
+            position: relative;
+            height: 300px; /* Altura padrão */
+            width: 100%;
+        }
+        .chart-container.tall {
+            height: 400px;
+        }
+
+        /* --- Responsividade --- */
+        @media (max-width: 1024px) {
+            .col-span-8, .col-span-4 {
+                grid-column: span 12; /* Em telas médias, tudo vira coluna inteira */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .col-span-3 {
+                 grid-column: span 6; /* KPIs viram 2 por linha */
+            }
+            .filters-bar {
+                flex-direction: column;
+            }
+            .filter-group select {
+                width: 100%;
+            }
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-left">
+            <h1>Visão Geral de Desempenho</h1>
+        </div>
+        <div class="user-info">
+            <div class="user-welcome">
+                Bem-vindo, <strong id="userName">Usuário</strong>
+            </div>
+            <button class="logout-btn" onclick="fazerLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sair
+            </button>
+        </div>
+    </header>
+
+    <section class="filters-bar">
+        <div class="filter-group">
+            <label for="periodoSelect">Período:</label>
+            <select id="periodoSelect" onchange="filtrarDados()">
+                <option value="7d">Últimos 7 dias</option>
+                <option value="30d" selected>Últimos 30 dias</option>
+                <option value="90d">Último trimestre</option>
+                <option value="1y">Este ano</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="categoriaSelect">Categoria:</label>
+            <select id="categoriaSelect" onchange="filtrarDados()">
+                <option value="todas">Todas as Categorias</option>
+                <option value="eletronicos">Eletrônicos</option>
+                <option value="vestuario">Vestuário</option>
+                <option value="servicos">Serviços</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+             <label for="statusSelect">Status:</label>
+             <select id="statusSelect" onchange="filtrarDados()">
+                 <option value="ativo">Ativo</option>
+                 <option value="pendente">Pendente</option>
+                 <option value="arquivado">Arquivado</option>
+             </select>
+         </div>
+    </section>
+
+    <main class="dashboard-grid">
+
+        <div class="card col-span-3 kpi-card">
+            <div class="card-header"><h2>Receita Total</h2></div>
+            <span class="kpi-value">R$ 124.500</span>
+            <span class="kpi-label">+12% vs mês anterior</span>
+        </div>
+        <div class="card col-span-3 kpi-card">
+             <div class="card-header"><h2>Novos Usuários</h2></div>
+            <span class="kpi-value">8.432</span>
+            <span class="kpi-label">+5% vs mês anterior</span>
+        </div>
+         <div class="card col-span-3 kpi-card">
+             <div class="card-header"><h2>Taxa de Conversão</h2></div>
+            <span class="kpi-value">3.2%</span>
+            <span class="kpi-label">-1% vs mês anterior</span>
+        </div>
+         <div class="card col-span-3 kpi-card">
+             <div class="card-header"><h2>Tickets Abertos</h2></div>
+            <span class="kpi-value" style="color: #ef4444;">142</span>
+            <span class="kpi-label">Requer atenção</span>
+        </div>
+
+
+        <div class="card col-span-12">
+            <div class="card-header">
+                <h2>Tendência de Vendas e Tráfego (Últimos 6 meses)</h2>
+            </div>
+            <div class="chart-container tall">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card col-span-8">
+            <div class="card-header">
+                <h2>Desempenho por Vendedor (Top 5)</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card col-span-4">
+            <div class="card-header">
+                <h2>Distribuição de Receita por Canal</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    // Configurações globais de estilo para o Chart.js
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#e2e8f0';
+
+    // --- 1. Configuração do Gráfico de LINHA ---
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    const myLineChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+            datasets: [
+                {
+                    label: 'Vendas (R$)',
+                    data: [65000, 59000, 80000, 81000, 95000, 110000],
+                    borderColor: '#4f46e5', // Cor primária
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    tension: 0.3, // Curvatura da linha
+                    fill: true
+                },
+                {
+                    label: 'Tráfego (Visitantes)',
+                    data: [45000, 48000, 52000, 49000, 60000, 75000],
+                    borderColor: '#10b981', // Cor verde
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'y1' // Usa um segundo eixo Y
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: { display: true, text: 'Receita (R$)' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { drawOnChartArea: false }, // Remove a grade do segundo eixo
+                    title: { display: true, text: 'Visitantes' }
+                }
+            }
+        }
+    });
+
+    // --- 2. Configuração do Gráfico de BARRAS ---
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    const myBarChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Ana Silva', 'Carlos Souza', 'Mariana Lima', 'Ricardo Beto', 'Fernanda Costa'],
+            datasets: [{
+                label: 'Vendas Totais',
+                data: [120, 190, 150, 210, 180],
+                backgroundColor: [
+                    '#4f46e5',
+                    '#818cf8',
+                    '#a5b4fc',
+                    '#c7d2fe',
+                    '#e0e7ff'
+                ],
+                borderRadius: 6, // Bordas arredondadas nas barras
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false } // Esconde a legenda pois já tem título
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // --- 3. Configuração do Gráfico de PIZZA (Doughnut é mais moderno) ---
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    const myPieChart = new Chart(pieCtx, {
+        type: 'doughnut', // 'pie' para pizza cheia, 'doughnut' para rosca
+        data: {
+            labels: ['Orgânico', 'Pago (Ads)', 'Redes Sociais', 'Email', 'Direto'],
+            datasets: [{
+                data: [45, 25, 15, 10, 5],
+                backgroundColor: [
+                    '#4f46e5', // Índigo forte
+                    '#f59e0b', // Laranja
+                    '#10b981', // Verde
+                    '#3b82f6', // Azul
+                    '#8b5cf6'  // Roxo
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                }
+            },
+            cutout: '60%' // Define a espessura da rosca
+        }
+    });
+
+    // --- Função de Logout ---
+    function fazerLogout() {
+        if (confirm('Deseja realmente sair do sistema?')) {
+            // Redireciona para a rota de logout do Flask
+            window.location.href = '/logout';
+        }
+    }
+
+    // --- Função de Simulação dos Filtros ---
+    function filtrarDados() {
+        const periodo = document.getElementById('periodoSelect').value;
+        const categoria = document.getElementById('categoriaSelect').value;
+        const status = document.getElementById('statusSelect').value;
+
+        console.log(`Filtros aplicados: Período=${periodo}, Categoria=${categoria}, Status=${status}`);
+        
+        alert(`Simulação: Filtros aplicados!\nVerifique o console do navegador (F12) para ver os valores selecionados.`);
+
+        // Em um cenário real, aqui você faria uma chamada AJAX/Fetch para o backend
+        // e atualizaria os dados dos gráficos:
+        // myLineChart.data.datasets[0].data = [novos dados...];
+        // myLineChart.update();
+    }
+
+    // --- Carregar informações do usuário (se disponível) ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // Em um cenário real, você obteria essas informações da sessão/backend
+        // Por enquanto, vamos usar um valor padrão
+        const userName = 'Administrador';
+        document.getElementById('userName').textContent = userName;
+        
+        console.log('Dashboard carregado para:', userName);
+    });
+</script>
+
+</body>
+</html>
