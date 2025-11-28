@@ -1,7 +1,8 @@
-# login_painel
+# login_painel | Python, Flask, Html, CSS, Javascript
 
 Estrutura do Projeto
-<img width="990" height="644" alt="image" src="https://github.com/user-attachments/assets/b4df60ff-5e85-41a6-8c22-d21974917221" />
+<img width="968" height="632" alt="image" src="https://github.com/user-attachments/assets/39aca3bd-190f-4c0a-9429-71aa7261b249" />
+
 
 tela de login para acesso ao dashboard
 
