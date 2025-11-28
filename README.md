@@ -1,4 +1,8 @@
 # login_painel
+
+Estrutura do Projeto
+<img width="990" height="644" alt="image" src="https://github.com/user-attachments/assets/b4df60ff-5e85-41a6-8c22-d21974917221" />
+
 tela de login para acesso ao dashboard
 
 <img width="1376" height="766" alt="image" src="https://github.com/user-attachments/assets/f90b8dbf-ad59-498a-a072-01d2a3deddb3" />
@@ -18,3 +22,4 @@ Banco de dados MySQL da tabela de usuários
 Tela de cadastro de novo usuário 
 
 <img width="924" height="862" alt="image" src="https://github.com/user-attachments/assets/075b0fae-53de-473a-b5f3-b6e9771d7c26" />
+
